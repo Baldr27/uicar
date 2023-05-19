@@ -1,40 +1,70 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div class="container">
+    <div>
+      <form @submit.prevent="submitForm">
+        <input type="number" v-model="quantity" placeholder="Enter quantity">
+        <button type="submit">Generate</button>
+      </form>
+    </div>
+    <table class="table table-striped" v-if="cars">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Brand</th>
+          <th scope="col">Year</th>
+          <th scope="col">Color</th>
+          <th scope="col">Price</th>
+          <th scope="col">Turbo</th>
+          <th scope="col">Type</th>
+          <th scope="col">Motor</th>
+          <th scope="col">Popularity</th>
+          <th scope="col">Cabinas</th>
+          <th scope="col">Sunroof</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="car in cars" :key="car.id">
+          <td>{{car.id}}</td>
+          <td>{{car.brand}}</td>
+          <td>{{car.year}}</td>
+          <td>{{car.color}}</td>
+          <td>{{car.price}}</td>
+          <td>{{car.turbo}}</td>
+          <td>{{car.type}}</td>
+          <td>{{car.motor}}</td>
+          <td>{{car.popularity}}</td>
+          <td>{{car.cabinas}}</td>
+          <td>{{car.sunroof}}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script>
+//import { reactive } from 'vue';
+import axios from 'axios';
+  
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
+  data(){
+    return{
+      quantity: 0,
+      cars: null,
+    };
+  },
+  methods:{
+    generate(){
+      axios.get(`http://localhost:3001/api/generate?quantity=${this.quantity}`)
+        .then(response => {
+          this.cars = response.data;
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+    submitForm(){
+      this.generate();
+    }
   }
 }
 </script>
